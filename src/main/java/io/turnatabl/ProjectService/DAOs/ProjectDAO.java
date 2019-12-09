@@ -1,5 +1,6 @@
 package io.turnatabl.ProjectService.DAOs;
 
+import io.turnatabl.ProjectService.models.Developer;
 import io.turnatabl.ProjectService.models.Project;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public interface ProjectDAO {
     List<Project> getCompletedProject();
 
     List<Project> searchProject(String project_name);
+
+    void assignProject(List<Integer> developerIds);
 
 
 }
