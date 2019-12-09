@@ -19,7 +19,7 @@ public interface ProjectDAO {
 
     List<Project> getCompletedProject();
 
-    List<Project> searchProject();
+    List<Project> searchProject(String project_name);
 
 
 }
