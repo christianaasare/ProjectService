@@ -24,7 +24,6 @@ public class ProjectController implements ProjectDAO {
     @Override
     public List<Project> getAllProjects() {
         return this.jdbcTemplate.query("select * from projects", BeanPropertyRowMapper.newInstance(Project.class));
-
     }
 
     @ApiOperation("Get a list of uncompleted projects")
@@ -32,7 +31,8 @@ public class ProjectController implements ProjectDAO {
     @GetMapping("/projects/available")
     @Override
     public List<Project> getAllAvailableProjects() {
-        return null;
+//        return this.jdbcTemplate.query("select project.title from projects inner join current_projects on projects.project_id = current_project.project_id where current_project");
+        return this.jdbcTemplate.query("select * from projects where completed = 0", BeanPropertyRowMapper.newInstance(Project.class));
     }
 
 
@@ -40,54 +40,62 @@ public class ProjectController implements ProjectDAO {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/projects/{id}")
     @Override
-    public Project getProjectById(Integer project_id) {
-        return null;
+    public Project getProjectById(@PathVariable Integer project_id) {
+        return (Project) this.jdbcTemplate.query("select * from projects where project_id = 1",
+                new Object[]{project_id},
+                BeanPropertyRowMapper.newInstance(Project.class));
     }
 
     @ApiOperation("Remove a project by Id")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @DeleteMapping("/projects/{id}")
     @Override
-    public void deleteProjectById(Integer project_id) {
-
+    public void deleteProjectById(@PathVariable Integer project_id) {
+        this.jdbcTemplate.update("delete from customers where customer_id = ?", project_id);
     }
 
     @ApiOperation("Update a project by Id")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PutMapping("/projects/{id}")
     @Override
-    public void updateProject(Project project) {
-
+    public void updateProject(@RequestBody Project project, @PathVariable Integer project_id ) {
+        this.jdbcTemplate.update("update projects set title = ?, description = ?, where project_id = ?", project.getTitle(), project.getDescription(), project_id);
     }
 
     @ApiOperation("Add a project")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping("/projects/{id}")
+    @PostMapping("/projects")
     @Override
-    public void addProject(Project project) {
-
+    public void addProject(@RequestBody Project project) {
+       this.jdbcTemplate.update("insert into projects (title, description ) values (?,?)", project.getTitle(), project.getDescription());
     }
 
     @ApiOperation("Get completed projects")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping("/projects/completed")
+    @GetMapping("/projects/completed")
     @Override
     public List<Project> getCompletedProject() {
-        return null;
+        return this.jdbcTemplate.query("select * from projects where completed = 1", BeanPropertyRowMapper.newInstance(Project.class));
     }
-    @ApiOperation("Search for projects")
+    @ApiOperation("Search for projects by title")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping("/projects/search/{projectName}")
+    @GetMapping("/projects/search/{project_title}")
     @Override
-    public List<Project> searchProject(String project_name) {
-        return null;
+    public List<Project> searchProject(@PathVariable String project_title) {
+        return this.jdbcTemplate.query("select * from projects where title like ?",
+                new Object[]{project_title + "%"},
+                BeanPropertyRowMapper.newInstance(Project.class));
     }
 
     @ApiOperation("Assign project to a list of developers")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/projects/assign")
     @Override
-    public void assignProject(List<Integer> developerIds) {
+    public void assignProject(@RequestBody List<Integer> developerIds, Integer project_id) {
+//        developerIds.stream().forEach();
+        developerIds.stream().forEach(ids ->
+                this.jdbcTemplate.update(
+                        "insert into currentprojects (dev_id, project_id) values (?,?)", ids, project_id));
 
     }
 

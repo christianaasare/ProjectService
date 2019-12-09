@@ -14,7 +14,7 @@ public interface ProjectDAO {
 
     void deleteProjectById(Integer project_id);
 
-    void updateProject(Project project);
+    void updateProject(Project project,Integer project_id);
 
     void addProject(Project project);
 
@@ -22,7 +22,7 @@ public interface ProjectDAO {
 
     List<Project> searchProject(String project_name);
 
-    void assignProject(List<Integer> developerIds);
+    void assignProject(List<Integer> developerIds,Integer project_id);
 
 
 }
