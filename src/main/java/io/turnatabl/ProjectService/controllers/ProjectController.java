@@ -40,26 +40,28 @@ public class ProjectController implements ProjectDAO {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/projects/{project_id}")
     @Override
-    public Project getProjectById(@PathVariable Integer project_id) {
-        return (Project) this.jdbcTemplate.query("select * from projects where project_id = 1",
+    public Project getProjectById(@PathVariable("project_id") Integer project_id) {
+
+        List<Project>  projects = jdbcTemplate.query("select * from projects where project_id = ?",
                 new Object[]{project_id},
                 BeanPropertyRowMapper.newInstance(Project.class));
+        return projects.get(0);
     }
 
     @ApiOperation("Remove a project by Id")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @DeleteMapping("/projects/{project_id}")
     @Override
-    public void deleteProjectById(@PathVariable Integer project_id) {
-        this.jdbcTemplate.update("delete from customers where customer_id = ?", project_id);
+    @DeleteMapping("/projects/{project_id}")
+    public void deleteProjectById(@PathVariable("project_id") Integer project_id) {
+        jdbcTemplate.update("delete from projects where project_id = ?", project_id);
     }
 
     @ApiOperation("Update a project by Id")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PutMapping("/projects/{project_id}")
     @Override
+    @PutMapping("/projects/{project_id}")
     public void updateProject(@RequestBody Project project, @PathVariable Integer project_id ) {
-        this.jdbcTemplate.update("update projects set title = ?, description = ?, where project_id = ?", project.getTitle(), project.getDescription(), project_id);
+        jdbcTemplate.update("update projects set title = ?, description = ? where project_id = ?", project.getTitle(), project.getDescription(), project_id);
     }
 
     @ApiOperation("Add a project")
