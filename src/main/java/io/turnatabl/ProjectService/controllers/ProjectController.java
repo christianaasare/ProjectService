@@ -89,13 +89,13 @@ public class ProjectController implements ProjectDAO {
 
     @ApiOperation("Assign project to a list of developers")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping("/projects/assign")
+    @PostMapping("/projects/assign/{project_id}")
     @Override
-    public void assignProject(@RequestBody List<Integer> developerIds, Integer project_id) {
-//        developerIds.stream().forEach();
+    public void assignProject(@RequestBody List<Integer> developerIds, @PathVariable Integer project_id) {
+//        developerIds.stream().forEach(id -> System.out.println(id));
         developerIds.stream().forEach(ids ->
                 this.jdbcTemplate.update(
-                        "insert into currentprojects (dev_id, project_id) values (?,?)", ids, project_id));
+                        "insert into currentprojects (developer_id, project_id) values (?,?)", ids, project_id));
 
     }
 
