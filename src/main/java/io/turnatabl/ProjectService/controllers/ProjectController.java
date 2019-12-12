@@ -66,7 +66,7 @@ public class ProjectController implements ProjectDAO {
 
     @ApiOperation("Add a project")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping("/Project/addproject")
+    @PostMapping("/project")
     @Override
     public void addProject(@RequestBody Project project) {
        this.jdbcTemplate.update("insert into projects (title, description ) values (?,?)", project.getTitle(), project.getDescription());
