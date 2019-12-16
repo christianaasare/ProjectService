@@ -107,7 +107,7 @@ public class ProjectController implements ProjectDAO {
     @Override
     public Project getCurrentProjectByDevId(@PathVariable("emp_id") Integer emp_id) {
 
-        List<Project>  projects = jdbcTemplate.query("SELECT projects.title, projects.description FROM projects " +
+        List<Project>  projects = jdbcTemplate.query("SELECT projects.title, projects.description, projects.project_id FROM projects " +
                         "INNER JOIN currentprojects ON currentprojects.project_id = projects.project_id " +
                         "INNER JOIN employees ON currentprojects.emp_id = employees.emp_id where employees.emp_id = ?",
                 new Object[]{emp_id},
