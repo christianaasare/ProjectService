@@ -93,9 +93,9 @@ public class ProjectController implements ProjectDAO {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/projects/assign/{project_id}")
     @Override
-    public void assignProject(@RequestBody List<Integer> developerIds, @PathVariable Integer project_id) {
-//        developerIds.stream().forEach(id -> System.out.println(id));
-        developerIds.stream().forEach(ids ->
+    public void assignProject(@RequestBody List<Integer> emp_ids, @PathVariable Integer project_id) {
+
+        emp_ids.stream().forEach(ids ->
                 this.jdbcTemplate.update(
                         "insert into currentprojects (emp_id, project_id) values (?,?)", ids, project_id));
 
