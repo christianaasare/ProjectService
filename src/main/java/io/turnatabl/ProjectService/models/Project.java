@@ -5,6 +5,19 @@ import java.util.Date;
 public class Project {
     private int project_id;
     private String title;
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "project_id=" + project_id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", startdate=" + startdate +
+                ", enddate=" + enddate +
+                ", devno=" + devno +
+                '}';
+    }
+
     private String description;
     private Date startdate;
     private Date enddate;
@@ -64,12 +77,4 @@ public class Project {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "Project{" +
-                "project_id=" + project_id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }
