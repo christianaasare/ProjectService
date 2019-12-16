@@ -97,7 +97,7 @@ public class ProjectController implements ProjectDAO {
 //        developerIds.stream().forEach(id -> System.out.println(id));
         developerIds.stream().forEach(ids ->
                 this.jdbcTemplate.update(
-                        "insert into currentprojects (developer_id, project_id) values (?,?)", ids, project_id));
+                        "insert into currentprojects (emp_id, project_id) values (?,?)", ids, project_id));
 
     }
 
