@@ -93,11 +93,11 @@ public class ProjectController implements ProjectDAO {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/projects/assign/{project_id}")
     @Override
-    public void assignProject(@RequestBody List<Integer> developerIds, @PathVariable Integer project_id) {
-//        developerIds.stream().forEach(id -> System.out.println(id));
-        developerIds.stream().forEach(ids ->
+    public void assignProject(@RequestBody List<Integer> emp_ids, @PathVariable Integer project_id) {
+
+        emp_ids.stream().forEach(ids ->
                 this.jdbcTemplate.update(
-                        "insert into currentprojects (developer_id, project_id) values (?,?)", ids, project_id));
+                        "insert into currentprojects (emp_id, project_id) values (?,?)", ids, project_id));
 
     }
 
@@ -107,7 +107,7 @@ public class ProjectController implements ProjectDAO {
     @Override
     public Project getCurrentProjectByDevId(@PathVariable("emp_id") Integer emp_id) {
 
-        List<Project>  projects = jdbcTemplate.query("SELECT projects.title, projects.description FROM projects " +
+        List<Project>  projects = jdbcTemplate.query("SELECT projects.title, projects.description, projects.project_id FROM projects " +
                         "INNER JOIN currentprojects ON currentprojects.project_id = projects.project_id " +
                         "INNER JOIN employees ON currentprojects.emp_id = employees.emp_id where employees.emp_id = ?",
                 new Object[]{emp_id},
