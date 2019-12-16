@@ -24,5 +24,7 @@ public interface ProjectDAO {
 
     void assignProject(List<Integer> developerIds,Integer project_id);
 
+    Project getCurrentProjectByDevId(Integer emp_id);
+
 
 }
