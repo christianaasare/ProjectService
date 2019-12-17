@@ -31,7 +31,6 @@ public class ProjectController implements ProjectDAO {
     @GetMapping("/projects/available")
     @Override
     public List<Project> getAllAvailableProjects() {
-//        return this.jdbcTemplate.query("select project.title from projects inner join current_projects on projects.project_id = current_project.project_id where current_project");
         return this.jdbcTemplate.query("select * from projects where completed = 0", BeanPropertyRowMapper.newInstance(Project.class));
     }
 
@@ -61,7 +60,7 @@ public class ProjectController implements ProjectDAO {
     @Override
     @PutMapping("/projects/{project_id}")
     public void updateProject(@RequestBody Project project, @PathVariable Integer project_id ) {
-        jdbcTemplate.update("update projects set title = ?, description = ? where project_id = ?", project.getTitle(), project.getDescription(), project_id);
+        jdbcTemplate.update("update projects set title = ? where project_id = ?", project.getTitle(), project_id);
     }
 
     @ApiOperation("Add a project")
@@ -69,7 +68,7 @@ public class ProjectController implements ProjectDAO {
     @PostMapping("/projects")
     @Override
     public void addProject(@RequestBody Project project) {
-       this.jdbcTemplate.update("insert into projects (title, description ) values (?,?)", project.getTitle(), project.getDescription());
+       this.jdbcTemplate.update("insert into projects (title) values (?)", project.getTitle());
     }
 
     @ApiOperation("Get completed projects")
@@ -107,7 +106,7 @@ public class ProjectController implements ProjectDAO {
     @Override
     public Project getCurrentProjectByDevId(@PathVariable("emp_id") Integer emp_id) {
 
-        List<Project>  projects = jdbcTemplate.query("SELECT projects.title, projects.description, projects.project_id FROM projects " +
+        List<Project>  projects = jdbcTemplate.query("SELECT projects.title, projects.project_id FROM projects " +
                         "INNER JOIN currentprojects ON currentprojects.project_id = projects.project_id " +
                         "INNER JOIN employees ON currentprojects.emp_id = employees.emp_id where employees.emp_id = ?",
                 new Object[]{emp_id},
