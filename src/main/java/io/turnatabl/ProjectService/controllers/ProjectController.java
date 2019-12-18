@@ -31,7 +31,6 @@ public class ProjectController implements ProjectDAO {
     @GetMapping("/projects/available")
     @Override
     public List<Project> getAllAvailableProjects() {
-//        return this.jdbcTemplate.query("select project.title from projects inner join current_projects on projects.project_id = current_project.project_id where current_project");
         return this.jdbcTemplate.query("select * from projects where completed = 0", BeanPropertyRowMapper.newInstance(Project.class));
     }
 
@@ -61,7 +60,7 @@ public class ProjectController implements ProjectDAO {
     @Override
     @PutMapping("/projects/{project_id}")
     public void updateProject(@RequestBody Project project, @PathVariable Integer project_id ) {
-        jdbcTemplate.update("update projects set title = ?, description = ? where project_id = ?", project.getTitle(), project.getDescription(), project_id);
+        jdbcTemplate.update("update projects set title = ? where project_id = ?", project.getTitle(), project_id);
     }
 
     @ApiOperation("Add a project")
@@ -69,7 +68,7 @@ public class ProjectController implements ProjectDAO {
     @PostMapping("/projects")
     @Override
     public void addProject(@RequestBody Project project) {
-       this.jdbcTemplate.update("insert into projects (title, description ) values (?,?)", project.getTitle(), project.getDescription());
+       this.jdbcTemplate.update("insert into projects (title) values (?)", project.getTitle());
     }
 
     @ApiOperation("Get completed projects")
@@ -93,9 +92,9 @@ public class ProjectController implements ProjectDAO {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/projects/assign/{project_id}")
     @Override
-    public void assignProject(@RequestBody List<Integer> developerIds, @PathVariable Integer project_id) {
-//        developerIds.stream().forEach(id -> System.out.println(id));
-        developerIds.stream().forEach(ids ->
+    public void assignProject(@RequestBody List<Integer> emp_ids, @PathVariable Integer project_id) {
+
+        emp_ids.stream().forEach(ids ->
                 this.jdbcTemplate.update(
                         "insert into currentprojects (emp_id, project_id) values (?,?)", ids, project_id));
 
@@ -107,7 +106,7 @@ public class ProjectController implements ProjectDAO {
     @Override
     public Project getCurrentProjectByDevId(@PathVariable("emp_id") Integer emp_id) {
 
-        List<Project>  projects = jdbcTemplate.query("SELECT projects.title, projects.description, projects.project_id FROM projects " +
+        List<Project>  projects = jdbcTemplate.query("SELECT projects.title, projects.project_id FROM projects " +
                         "INNER JOIN currentprojects ON currentprojects.project_id = projects.project_id " +
                         "INNER JOIN employees ON currentprojects.emp_id = employees.emp_id where employees.emp_id = ?",
                 new Object[]{emp_id},
@@ -115,4 +114,20 @@ public class ProjectController implements ProjectDAO {
         return projects.get(0);
     }
 
+    @ApiOperation("GET ASSIGNED TASK BY DEVELOPER_ID")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/dev/assign/{emp_id}")
+    @Override
+    public Project getTaskByID(@PathVariable("emp_id") Integer emp_id) {
+//        return this.jdbcTemplate.query("SELECT projects.title from projects INNER JOIN currentprojects ON " +
+//                        "currentprojects.project_id = projects.project_id INNER JOIN employees ON currentprojects.emp_id" +
+//                        " = employees.emp_id where employees.emp_id = ?",
+//                new Object[]{emp_id + "%"},
+//                BeanPropertyRowMapper.newInstance(Develop.class));
+        List<Project> projects = jdbcTemplate.query("SELECT * from projects INNER JOIN currentprojects ON currentprojects.project_id = projects.project_id INNER JOIN employees ON currentprojects.emp_id = employees.emp_id where employees.emp_id = ?",
+                new Object[]{emp_id},
+                BeanPropertyRowMapper.newInstance(Project.class));
+        return projects.get(0);
+
+    }
 }
