@@ -26,5 +26,7 @@ public interface ProjectDAO {
 
     Project getCurrentProjectByDevId(Integer emp_id);
 
+    Project getTaskByID(Integer emp_id);
+
 
 }
