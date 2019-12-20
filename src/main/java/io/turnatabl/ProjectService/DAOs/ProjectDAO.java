@@ -22,7 +22,7 @@ public interface ProjectDAO {
 
     List<Project> searchProject(String project_name);
 
-    void assignProject(List<Integer> developerIds,Integer project_id);
+    void assignProject(Integer developersId,Integer project_id);
 
     Project getCurrentProjectByDevId(Integer emp_id);
 
