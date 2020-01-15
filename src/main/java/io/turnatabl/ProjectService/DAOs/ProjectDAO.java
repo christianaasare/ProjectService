@@ -22,6 +22,8 @@ public interface ProjectDAO {
 
     List<Project> searchProject(String project_name);
 
+    List<Project> assignedProjectByEmpId(Integer emp_id);
+
     void assignProject(List<Integer> developerIds,Integer project_id);
 
     Project getCurrentProjectByDevId(Integer emp_id);

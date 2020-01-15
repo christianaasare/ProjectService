@@ -126,5 +126,15 @@ public class ProjectController implements ProjectDAO {
 
      }
 
+    @ApiOperation("Get Assigned Projects by Emp_id :V2")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/projects/assigned/{emp_id}")
+    @Override
+    public List<Project> assignedProjectByEmpId(@PathVariable Integer emp_id) {
+        return this.jdbcTemplate.query("SELECT * from projects INNER JOIN currentprojects ON currentprojects.project_id = projects.project_id INNER JOIN employees ON currentprojects.emp_id = employees.emp_id where employees.emp_id = ?",
+                new Object[]{emp_id + "%"},
+                BeanPropertyRowMapper.newInstance(Project.class));
+    }
+
 
 }
