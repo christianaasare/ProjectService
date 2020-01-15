@@ -65,7 +65,7 @@ public class ProjectController implements ProjectDAO {
 
     @ApiOperation("Add a project")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping("/projects")
+    @PostMapping("/projects/add")
     @Override
     public void addProject(@RequestBody Project project) {
        this.jdbcTemplate.update("insert into projects (title) values (?)", project.getTitle());
@@ -119,15 +119,22 @@ public class ProjectController implements ProjectDAO {
     @GetMapping("/dev/assign/{emp_id}")
     @Override
     public Project getTaskByID(@PathVariable("emp_id") Integer emp_id) {
-//        return this.jdbcTemplate.query("SELECT projects.title from projects INNER JOIN currentprojects ON " +
-//                        "currentprojects.project_id = projects.project_id INNER JOIN employees ON currentprojects.emp_id" +
-//                        " = employees.emp_id where employees.emp_id = ?",
-//                new Object[]{emp_id + "%"},
-//                BeanPropertyRowMapper.newInstance(Develop.class));
-        List<Project> projects = jdbcTemplate.query("SELECT * from projects INNER JOIN currentprojects ON currentprojects.project_id = projects.project_id INNER JOIN employees ON currentprojects.emp_id = employees.emp_id where employees.emp_id = ?",
-                new Object[]{emp_id},
-                BeanPropertyRowMapper.newInstance(Project.class));
-        return projects.get(0);
+         List<Project> projects = jdbcTemplate.query("SELECT * from projects INNER JOIN currentprojects ON currentprojects.project_id = projects.project_id INNER JOIN employees ON currentprojects.emp_id = employees.emp_id where employees.emp_id = ?",
+                 new Object[]{emp_id},
+                 BeanPropertyRowMapper.newInstance(Project.class));
+         return projects.get(0);
 
+     }
+
+    @ApiOperation("Get Assigned Projects by Emp_id :V2")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/projects/assigned/{emp_id}")
+    @Override
+    public List<Project> assignedProjectByEmpId(@PathVariable Integer emp_id) {
+        return this.jdbcTemplate.query("SELECT * from projects INNER JOIN currentprojects ON currentprojects.project_id = projects.project_id INNER JOIN employees ON currentprojects.emp_id = employees.emp_id where employees.emp_id = ?",
+                new Object[]{emp_id + "%"},
+                BeanPropertyRowMapper.newInstance(Project.class));
     }
+
+
 }
